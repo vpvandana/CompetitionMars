@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompetitionMars", "CompetitionMars\CompetitionMars.csproj", "{D0394613-5981-4A33-997B-6478C2C9E2FC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D0394613-5981-4A33-997B-6478C2C9E2FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0394613-5981-4A33-997B-6478C2C9E2FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0394613-5981-4A33-997B-6478C2C9E2FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0394613-5981-4A33-997B-6478C2C9E2FC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {784BA91A-1F12-4B66-A81B-7E313A9F6178}
+	EndGlobalSection
+EndGlobal
