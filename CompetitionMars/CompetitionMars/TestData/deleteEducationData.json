@@ -1,0 +1,17 @@
+[
+  {
+    "CollegeName": "MG",
+    "Country": "India",
+    "Title": "B.Tech",
+    "Degree": "CS",
+    "Year": "2013"
+  },
+  {
+    "CollegeName": "CUSAT",
+    "Country": "Australia",
+    "Title": "M.Tech",
+    "Degree": "CS",
+    "Year": "2016"
+
+  }
+]

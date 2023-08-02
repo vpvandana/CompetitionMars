@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CompetitionMars.Utilities
+namespace CompetitionMars.DataModel
 {
-    public class AddEducationTestModel
+    public class Education
     {
-        public string collegeName { get; set; }
+        public string CollegeName { get; set; }
 
         public string Country { get; set; }
 

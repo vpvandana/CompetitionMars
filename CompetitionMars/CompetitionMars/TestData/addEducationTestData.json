@@ -1,8 +1,32 @@
-[ {
-"collegeName":"MG",
-"Country":"India",
-"Title":"Btech",
-"Degree":"CS",
-"Year":"2013"
-}]
+[
+  {
+    "CollegeName": "MG",
+    "Country": "India",
+    "Title": "B.Tech",
+    "Degree": "CS",
+    "Year": "2013"
+  },
+  {
+    "CollegeName": "CUSAT",
+    "Country": "Australia",
+    "Title": "M.Tech",
+    "Degree": "CS",
+    "Year": "2016"
+
+  },
+  {
+    "CollegeName": "UAT",
+    "Country": "New Zealand",
+    "Title": "Associate",
+    "Degree": "MS",
+    "Year": "2018"
+  },
+  {
+    "CollegeName": "UC",
+    "Country": "New Zealand",
+    "Title": "PHD",
+    "Degree": "Imaging",
+    "Year": "2020"
+  }
+]
 

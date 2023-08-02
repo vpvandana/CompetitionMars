@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CompetitionMars.Utilities
+namespace CompetitionMars.DataModel
 {
     public class LoginTestModel
     {

@@ -18,7 +18,7 @@ namespace CompetitionMars.Pages
         private static IWebElement passwordTextbox => driver.FindElement(By.Name("password"));
         private static IWebElement loginButton => driver.FindElement(By.XPath("/html/body/div[2]/div/div/div[1]/div/div[4]"));
 
-        public void LoginSteps(string email, string password)
+        public void LoginSteps()
         {
             //Launch the Application
             driver.Navigate().GoToUrl("http://localhost:5000/");
@@ -33,12 +33,14 @@ namespace CompetitionMars.Pages
 
             //Enter valid Username and Password
 
-           emailTextbox.SendKeys(email);
-            passwordTextbox.SendKeys(password);
+           emailTextbox.SendKeys("vandanapradeep1991@gmail.com");
+           passwordTextbox.SendKeys("12341234");
 
             //Sign In using Login Button
 
             loginButton.Click();
+           // Thread.Sleep(3000);
+           driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
           
             Wait.WaitToBeClickable(driver, "XPath", "/html/body/div[2]/div/div/div[1]/div/div[4]", 7);
         }
