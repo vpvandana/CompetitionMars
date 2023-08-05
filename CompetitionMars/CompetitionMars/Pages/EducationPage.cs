@@ -27,43 +27,30 @@ namespace CompetitionMars.Pages
         private static IWebElement addedTitle = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[4]/div/div[2]/div/table/tbody[last()]/tr/td[3][last()]"));
         //private static IWebElement addedDegree = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[4]/div/div[2]/div/table/tbody/tr/td[4][last()]"));
         //private static IWebElement addedYear = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[4]/div/div[2]/div/table/tbody/tr/td[5][last()]"));
-        private static IWebElement removeIcon => driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[4]/div/div[2]/div/table/tbody[last()]/tr/td[6]/span[2]/i"));
-        private static IWebElement updateIcon => driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[4]/div/div[2]/div/table/tbody[last()]/tr/td[6]/span[1]/i"));
+        private static IWebElement removeIcon => driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[4]/div/div[2]/div/table/tbody[1]/tr/td[6]/span[2]/i"));
+        private static IWebElement updateIcon => driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[4]/div/div[2]/div/table/tbody/tr/td[6]/span[1]/i"));
         private static IWebElement updateButton => driver.FindElement(By.XPath("//input[@value='Update']"));
 
         public void AddEducation(string CollegeName, string Country, string Title, string Degree, string Year)
         {
-            /* JsonReader jsonReaderObject = new JsonReader();
-             jsonReaderObject.GetTestData();
-             addNewButton.Click();
-
-             universityNameTextbox.SendKeys(GetTestData(collegeName));*/
+            
             Wait.WaitToBeClickable(driver, "XPath", "//*[@data-tab='third']", 7);
             educationTab.Click();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
+
+            addNewButton.Click();
+
+            universityNameTextbox.SendKeys(CollegeName);
+            countryDropdown.SendKeys(Country);
+            titleDropdown.SendKeys(Title);
+            degreeTextbox.SendKeys(Degree);
+            yearOfGraduationDropdown.SendKeys(Year);
+
+           addButton.Click();
+                //  Thread.Sleep(2000)
+          driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             
-            
-            
-           driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
-
-            //XPath of table
-  
-               
-                    addNewButton.Click();
-
-
-                    universityNameTextbox.SendKeys(CollegeName);
-                    countryDropdown.SendKeys(Country);
-                    titleDropdown.SendKeys(Title);
-                    degreeTextbox.SendKeys(Degree);
-                    yearOfGraduationDropdown.SendKeys(Year);
-
-                    addButton.Click();
-                    //  Thread.Sleep(2000);
-
-                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-                
-
-            
+                     
         }
 
         public string GetAddedEducation()
@@ -76,27 +63,29 @@ namespace CompetitionMars.Pages
             educationTab.Click();
 
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
+            IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Country']//ancestor::thead//following-sibling::tbody/tr"));
+            // string result = "";
 
             //find the row in table
 
             //IWebElement row = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[4]/div/div[2]/div/table/tbody[1]/tr"));
 
-           // if (row != null) 
-            
-           // {
-                updateIcon.Click();
-                universityNameTextbox.Clear();
-                universityNameTextbox.SendKeys(CollegeName);
+            // if (row != null) 
+
+            // {
+            updateIcon.Click();
+            universityNameTextbox.Clear();
+            universityNameTextbox.SendKeys(CollegeName);
 
                 
-                countryDropdown.SendKeys(Country);
-                titleDropdown.SendKeys(Title);
-                degreeTextbox.Clear();
-                degreeTextbox.SendKeys(Degree);
-                yearOfGraduationDropdown.SendKeys(Year);
-                 driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
-                 updateButton.Click();
-                Thread.Sleep(3000);
+            countryDropdown.SendKeys(Country);
+            titleDropdown.SendKeys(Title);
+            degreeTextbox.Clear();
+            degreeTextbox.SendKeys(Degree);
+            yearOfGraduationDropdown.SendKeys(Year);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
+            updateButton.Click();
+            Thread.Sleep(3000);
                 //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15); 
 
 
@@ -108,74 +97,181 @@ namespace CompetitionMars.Pages
             //}
         }
 
-        public List<Education> GetUpdatedEducation()
+        public string GetUpdatedEducation()
         {
-            List<Education> educationData = new List<Education>();
-            IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Country']//ancestor::thead//following-sibling::tbody[last()]/tr"));
-           // string result = "";
-            foreach (IWebElement row in rows)
-            {
-                IWebElement countryElement = row.FindElement(By.XPath("./td[1]"));
-                IWebElement collegeNameElement = row.FindElement(By.XPath("./td[2]"));
-                IWebElement titleElement = row.FindElement(By.XPath("./td[3]"));
-                IWebElement degreeElement = row.FindElement(By.XPath("./td[4]"));
-                IWebElement yearElement = row.FindElement(By.XPath("./td[5]"));
-
-                string country = countryElement.Text;
-                string collegeName = collegeNameElement.Text;
-                string title = titleElement.Text;
-                string degree = degreeElement.Text;
-                string year = yearElement.Text;
-                //  if (country.Equals(Country, StringComparison.OrdinalIgnoreCase) && collegeName.Equals(CollegeName, StringComparison.OrdinalIgnoreCase) && title.Equals(Title, StringComparison.OrdinalIgnoreCase) && degree.Equals(Degree, StringComparison.OrdinalIgnoreCase) && year.Equals(Year, StringComparison.OrdinalIgnoreCase))
-                educationData.Add(new Education
-                {
-                    Country = country,
-                    CollegeName = collegeName,
-                    Title = title,
-                    Degree = degree,
-                    Year = year
-                });
-            }
-
-            return educationData; 
+           
+            IWebElement updatedDegree = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[4]/div/div[2]/div/table/tbody/tr/td[4]"));
+            return updatedDegree.Text;
             
         }
 
-        public void DeleteEducation(string Degree, string Title)
+        public void DeleteEducation(string Degree)
         {
-            IWebElement educationRow = GetDeleteEducation(Degree, Title);
-            if (educationRow != null) 
-            {
-                IWebElement deleteIcon = educationRow.FindElement(By.XPath("//tbody[1]/tr[1]/td[6]/span[2]/i[1]"));
-                deleteIcon.Click();
-            }
-        }
+            educationTab.Click();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
+            JsonHelper jsonHelperObject = new JsonHelper();
+            string jsonFilePath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\TestData\\DeleteEducationTestData.json";
+            List<Education> testData = jsonHelperObject.ReadTestDataFromJson(jsonFilePath);
 
-        public IWebElement  GetDeleteEducation(string Degree, string Title)
-        {
-            ReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Country']//ancestor::thead//following-sibling::tbody[last()]/tr"));
-            foreach (IWebElement row in rows)
-            {
-                IWebElement collegeNameElement = row.FindElement(By.XPath(".\td[2]"));
-                IWebElement countryElement = row.FindElement(By.XPath(".\td[1]"));
-                IWebElement titleElement = row.FindElement(By.XPath(".\td[3]"));
-                IWebElement degreeElement = row.FindElement(By.XPath(".\td[4]"));
-                IWebElement yearElement = row.FindElement(By.XPath(".\td[5]"));
-                string collegeName = collegeNameElement.Text;
-                string country = countryElement.Text;
-                string title = titleElement.Text;
-                string degree = degreeElement.Text;
-                string year = yearElement.Text;
-               
-                
+            Console.WriteLine(testData.ToString());
 
-                if (degree.Equals(Degree, StringComparison.OrdinalIgnoreCase) && title.Equals(Title, StringComparison.OrdinalIgnoreCase))
+            foreach (var education in testData)
+            {
+                string degree = education.Degree;
+                //Console.WriteLine(degree);
+
+                IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Country']//ancestor::thead//following-sibling::tbody[1]/tr"));
+                foreach (IWebElement row in rows)
                 {
-                    return row;
-                    
+                    IWebElement degreeElement = row.FindElement(By.XPath("./td[4]"));
+                    string degreetodelete = degreeElement.Text;
+
+                    Console.WriteLine(degreetodelete);
+                    if(degreetodelete == education.Degree)
+                    {
+
+                        IWebElement deleteIcon = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[4]/div/div[2]/div/table/tbody[1]/tr/td[6]/span[2]/i"));
+                        deleteIcon.Click();
+                       // Thread.Sleep(3000);
+                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
+                    }
+                 
                 }
             }
-            return null;
+
+            driver.Navigate().Refresh();    
         }
+
+        public string GetDeleteEducation()
+        {
+            JsonHelper jsonHelperObject = new JsonHelper();
+            string jsonFilePath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\TestData\\DeleteEducationTestData.json";
+            List<Education> testData = jsonHelperObject.ReadTestDataFromJson(jsonFilePath);
+
+            string result = "";
+            Console.WriteLine(testData.ToString());
+            foreach (var education in testData)
+            {
+                string degree = education.Degree;
+                string title = education.Title;
+               
+
+                IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Country']//ancestor::thead//following-sibling::tbody[1]/tr"));
+                foreach (IWebElement row in rows)
+                {
+
+                    IWebElement titleElement = row.FindElement(By.XPath("./td[3]"));
+                    IWebElement degreeElement = row.FindElement(By.XPath("./td[4]"));
+
+                    string deletedTitle = titleElement.Text;
+                    string deletedDegree = degreeElement.Text;
+
+                    if ((deletedDegree != education.Degree) && (deletedTitle != education.Title))
+                    {
+                        result = "Deleted";
+                        
+                        break;
+                    }
+                    else
+                    {
+                        result = "Not deleted";
+                    }
+                }
+
+            }
+            Console.WriteLine("Education Deleted");
+            return result;
+        }
+        public string GetDeleteMessage()
+        {
+            IWebElement actualMessage = driver.FindElement(By.XPath("//div[text()='Education entry successfully removed']"));
+            return actualMessage.Text;
+        }
+
+        public void AddEmptyEducationField(string CollegeName, string Country, string Title, string Degree, string Year)
+        {
+            
+
+            Wait.WaitToBeClickable(driver, "XPath", "//*[@data-tab='third']", 7);
+            educationTab.Click();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
+
+            addNewButton.Click();
+
+            universityNameTextbox.SendKeys(CollegeName);
+            countryDropdown.SendKeys(Country);
+            titleDropdown.SendKeys(Title);
+
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
+
+            degreeTextbox.SendKeys(Degree);
+            yearOfGraduationDropdown.SendKeys(Year);
+
+            addButton.Click();
+            //  Thread.Sleep(2000);
+
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
+
+        }
+
+        public string GetEmptyFieldErrorMessage()
+        {
+            IWebElement actualErrorMessage = driver.FindElement(By.XPath("//div[@class='ns-box-inner']"));
+            return actualErrorMessage.Text;
+        }
+
+        public void AddSameDegreeSameYear(string CollegeName, string Country, string Title, string Degree, string Year)
+        {
+
+
+            Wait.WaitToBeClickable(driver, "XPath", "//*[@data-tab='third']", 7);
+            educationTab.Click();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
+
+            addNewButton.Click();
+
+            universityNameTextbox.SendKeys(CollegeName);
+            countryDropdown.SendKeys(Country);
+            titleDropdown.SendKeys(Title);
+            degreeTextbox.SendKeys(Degree);
+            yearOfGraduationDropdown.SendKeys(Year);
+
+            addButton.Click();
+            //  Thread.Sleep(2000);
+
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+
+        }
+
+        public string GetSameEducationDetailsErrorMessage()
+        {
+            IWebElement actualErrorMessage = driver.FindElement(By.XPath("//div[@class='ns-box ns-growl ns-effect-jelly ns-type-error ns-show']"));
+            return actualErrorMessage.Text;
+        }
+
+        public string GetSameDegreeDifferentYearErrorMessage()
+        {
+            IWebElement actualErrorMessage = driver.FindElement(By.XPath("//div[@class='ns-box-inner']"));
+            return actualErrorMessage.Text;
+        }
+
+        public void UpdateEducationNoChange()
+        {
+            Wait.WaitToBeClickable(driver, "XPath", "//*[@data-tab='third']", 7);
+            educationTab.Click();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
+
+            updateIcon.Click();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
+            updateButton.Click();
+
+        }
+
+        public string GetUpdateNoChangeErrorMessage()
+        {
+            IWebElement actualErrorMessage = driver.FindElement(By.XPath("//div[@class='ns-box-inner']"));
+            return actualErrorMessage.Text;
+        }
+       
     }
 }

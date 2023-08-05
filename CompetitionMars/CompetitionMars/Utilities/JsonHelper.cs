@@ -27,6 +27,13 @@ namespace CompetitionMars.Utilities
             List<Education> testData = JsonConvert.DeserializeObject<List<Education>>(jsonContent);
             return testData;
         }
+
+        public List<Certification> ReadCertificateTestDataFromJson(string jsonFilePath)
+        {
+            string jsonContent = File.ReadAllText(jsonFilePath);
+            List<Certification> testData = JsonConvert.DeserializeObject<List<Certification>>(jsonContent);
+            return testData;
+        }
     }
 
 }
