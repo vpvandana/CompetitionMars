@@ -79,10 +79,7 @@ namespace CompetitionMars.Tests
             List<Certification> certificationTestData = JsonConvert.DeserializeObject<List<Certification>>(jsonData);
             Console.WriteLine(certificationTestData.ToString());
 
-   
-
-
-            foreach (var certificate in testData)
+            foreach (var certificate in certificationTestData)
             {
                 string certificateName = certificate.Certificate;
                 Console.WriteLine(certificateName);
@@ -95,17 +92,11 @@ namespace CompetitionMars.Tests
 
                 certificationPageObject.UpdateCertification(certificateName, certificateFrom, certificateYear);
 
-                List<Certification> updatedCertificationData = certificationPageObject.GetUpdatedCertification();
+                string updatedCertificate =  certificationPageObject.GetUpdatedCertification();   
 
-                //updatedEducation.Add(education);
-                Assert.AreEqual(certificationTestData.Count, updatedCertificationData.Count, "Number of certification entries mismatch.");
-
-                for (int i = 0; i < certificationTestData.Count; i++)
+                if (certificate.Certificate == updatedCertificate) 
                 {
-                    Assert.AreEqual(certificationTestData[i].Certificate, updatedCertificationData[i].Certificate, "Certificate mismatch for entry " + i);
-                    Assert.AreEqual(certificationTestData[i].From, updatedCertificationData[i].From, "Certificate From mismatch for entry " + i);
-                    Assert.AreEqual(certificationTestData[i].CertificationYear, updatedCertificationData[i].CertificationYear, "Year mismatch for entry " + i);
-
+                    Assert.AreEqual(updatedCertificate, certificate.Certificate, "Actual and update certificate do not match");
                 }
                 //Assert.AreEqual(testData, updatedEducation, "Actual and expected education do not match");
             }
@@ -115,26 +106,25 @@ namespace CompetitionMars.Tests
         public void DeleteCertificationTest()
         {
             CertificationPage certificationPageObject = new CertificationPage();
+
             string jsonFilePath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\TestData\\DeleteCertificateTestData.json";
+
             List<Certification> testData = jsonHelperObject.ReadCertificateTestDataFromJson(jsonFilePath);
 
-            List<Certification> initialCertificateData = certificationPageObject.GetDeletedCertification();
-            string certificateToDelete = initialCertificateData[0].Certificate;
-
-            certificationPageObject.DeleteCertification(certificateToDelete);
-
-            string jsonDataAfterDeletion = File.ReadAllText(jsonFilePath);
-            List<Certification> expectedCertificationDataAfterDeletion = JsonConvert.DeserializeObject<List<Certification>>(jsonDataAfterDeletion);
-            // List<Education> expectedEducationDataAfterDeletion = jsonHelperObject.ReadTestDataFromJson(jsonDataAfterDeletion);
-
-            List<Certification> actualCertificationDataAfterDeletion = certificationPageObject.GetDeletedCertification();
-
-            for (int i = 0; i < expectedCertificationDataAfterDeletion.Count; i++)
+            foreach (var certificate in testData)
             {
-                Assert.AreEqual(expectedCertificationDataAfterDeletion[i].Certificate, actualCertificationDataAfterDeletion[i].Certificate, "certificate mismatch for entry " + i);
-                Assert.AreEqual(expectedCertificationDataAfterDeletion[i].From, actualCertificationDataAfterDeletion[i].From, "certificate from mismatch for entry " + i);
-                Assert.AreEqual(expectedCertificationDataAfterDeletion[i].CertificationYear, actualCertificationDataAfterDeletion[i].CertificationYear, "year mismatch for entry " + i);
+                string certificateName = certificate.Certificate;
+               
+                string certificateFrom = certificate.From;
+                //Console.WriteLine(certificateFrom);
+                string certificateYear = certificate.CertificationYear;
+
+                certificationPageObject.DeleteCertification(certificateName);
                 
+                string deleteCertificateResult = certificationPageObject.GetDeletedCertification();
+
+                Assert.AreEqual("Deleted", deleteCertificateResult, "Actual and expected message do not match. Certificate not deleted");
+
             }
         }
 

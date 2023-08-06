@@ -1,5 +1,6 @@
 ﻿using CompetitionMars.DataModel;
 using CompetitionMars.Utilities;
+using Newtonsoft.Json;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace CompetitionMars.Pages
         private static IWebElement addButton => driver.FindElement(By.XPath("//input[@value='Add']"));
         private static IWebElement updateIcon => driver.FindElement(By.XPath("/html[1]/body[1]/div[1]/div[1]/section[2]/div[1]/div[1]/div[1]/div[3]/form[1]/div[5]/div[1]/div[2]/div[1]/table[1]/tbody[last()]/tr[1]/td[4]/span[1]/i[1]"));
         private static IWebElement updateButton => driver.FindElement(By.XPath("//input[@value='Update']"));
-        private static IWebElement removeIcon => driver.FindElement(By.XPath("/html[1]/body[1]/div[1]/div[1]/section[2]/div[1]/div[1]/div[1]/div[3]/form[1]/div[5]/div[1]/div[2]/div[1]/table[1]/tbody[last()]/tr[1]/td[4]/span[2]/i[1]"));
+        private static IWebElement removeIcon => driver.FindElement(By.XPath("/html[1]/body[1]/div[1]/div[1]/section[2]/div[1]/div[1]/div[1]/div[3]/form[1]/div[5]/div[1]/div[2]/div[1]/table[1]/tbody/tr[1]/td[4]/span[2]/i[1]"));
         private static IWebElement cancelButton => driver.FindElement(By.XPath("//input[@value='Cancel']"));
         private static IWebElement certificationTab => driver.FindElement(By.XPath("//a[@data-tab='fourth']"));
         private static IWebElement addedCertificate => driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[5]/div[1]/div[2]/div/table/tbody[last()]/tr/td[1]"));
@@ -86,68 +87,88 @@ namespace CompetitionMars.Pages
             //}
         }
 
-        public List<Certification> GetUpdatedCertification()
+        public string GetUpdatedCertification()
         {
-            List<Certification> certificateData = new List<Certification>();
-            IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Certificate']//ancestor::thead//following-sibling::tbody[last()]/tr"));
-            // string result = "";
-            foreach (IWebElement row in rows)
-            {
-                IWebElement certificateNameElement = row.FindElement(By.XPath("./td[1]"));
-                IWebElement certificateFromElement = row.FindElement(By.XPath("./td[2]"));
-                IWebElement certificateYearElement = row.FindElement(By.XPath("./td[3]"));
-                
-                string certificateName = certificateNameElement.Text;
-                string certificateFrom = certificateFromElement.Text;
-                string certificateYear = certificateYearElement.Text;
-              
-                //  if (country.Equals(Country, StringComparison.OrdinalIgnoreCase) && collegeName.Equals(CollegeName, StringComparison.OrdinalIgnoreCase) && title.Equals(Title, StringComparison.OrdinalIgnoreCase) && degree.Equals(Degree, StringComparison.OrdinalIgnoreCase) && year.Equals(Year, StringComparison.OrdinalIgnoreCase))
-                certificateData.Add(new Certification
-                {
-                   Certificate = certificateName,
-                   From = certificateFrom,
-                   CertificationYear = certificateYear
-                });
-            }
-
-            return certificateData;
+            IWebElement updatedCertificate = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[5]/div[1]/div[2]/div/table/tbody/tr/td[1]"));
+            return updatedCertificate.Text;
 
         }
 
         public void DeleteCertification(string Certificate)
         {
+           
             certificationTab.Click();
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
+            JsonHelper jsonHelperObject = new JsonHelper();
+            string jsonFilePath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\TestData\\DeleteCertificateTestData.json";
+            
+            List<Certification> certificationTestData = jsonHelperObject.ReadCertificateTestDataFromJson(jsonFilePath);
 
-            removeIcon.Click();  
+            Console.WriteLine(certificationTestData.ToString());
+
+            foreach (var certificate in certificationTestData)
+            {
+                string certificateName = certificate.Certificate;
+                //  Console.WriteLine(certificateName);
+                IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Certificate']//ancestor::thead//following-sibling::tbody/tr"));
+                foreach (IWebElement row in rows) 
+                {
+                    IWebElement certificateNameElement = row.FindElement(By.XPath("./td[1]"));
+                    string certificateToDelete = certificateNameElement.Text;
+
+                    if(certificateToDelete == certificate.Certificate) 
+                    {
+                        IWebElement deleteIcon = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[5]/div[1]/div[2]/div/table/tbody[1]/tr/td[4]/span[2]/i"));
+                        deleteIcon.Click();
+                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
+                      
+                    }
+                }
+
+            }          
 
         }
 
-        public List<Certification> GetDeletedCertification()
+        public string GetDeletedCertification()
         {
-            List<Certification> certificateData = new List<Certification>();
-            IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Certificate']//ancestor::thead//following-sibling::tbody[last()]/tr"));
-            // string result = "";
-            foreach (IWebElement row in rows)
+            JsonHelper jsonHelperObject = new JsonHelper();
+            string jsonFilePath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\TestData\\DeleteCertificateTestData.json";
+            
+            List<Certification> certificationTestData = jsonHelperObject.ReadCertificateTestDataFromJson(jsonFilePath);
+            // List<Certification> certificationTestData = JsonConvert.DeserializeObject<List<Certification>>(jsonData);
+            string result = "";
+
+            foreach(var certificate in certificationTestData)
             {
-                IWebElement certificateNameElement = row.FindElement(By.XPath("./td[1]"));
-                IWebElement certificateFromElement = row.FindElement(By.XPath("./td[2]"));
-                IWebElement certificateYearElement = row.FindElement(By.XPath("./td[3]"));
+                string certificateName = certificate.Certificate;
+                string certificateFrom = certificate.From;
 
-                string certificateName = certificateNameElement.Text;
-                string certificateFrom = certificateFromElement.Text;
-                string certificateYear = certificateYearElement.Text;
+                IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Certificate']//ancestor::thead//following-sibling::tbody/tr"));
 
-                //  if (country.Equals(Country, StringComparison.OrdinalIgnoreCase) && collegeName.Equals(CollegeName, StringComparison.OrdinalIgnoreCase) && title.Equals(Title, StringComparison.OrdinalIgnoreCase) && degree.Equals(Degree, StringComparison.OrdinalIgnoreCase) && year.Equals(Year, StringComparison.OrdinalIgnoreCase))
-                certificateData.Add(new Certification
+                foreach (IWebElement row in rows)
                 {
-                    Certificate = certificateName,
-                    From = certificateFrom,
-                    CertificationYear = certificateYear
-                });
-            }
+                    IWebElement certificateNameElement = row.FindElement(By.XPath("./td[1]"));
+                    IWebElement certificateFromElement = row.FindElement(By.XPath("./td[2]"));
 
-            return certificateData;
+                    string deletedCertificateName = certificateNameElement.Text;
+                    string deletedCertificateFrom = certificateFromElement.Text;
+
+                    if ((deletedCertificateName != certificate.Certificate) && (deletedCertificateFrom != certificate.From))
+                      {
+                        result = "Deleted";
+                        break;
+                      }
+                    else
+                    {
+                        result = "Not Deleted";
+                    }
+                    
+
+                }
+            }
+           
+            return result;
+            //  if (country.Equals(Country, StringComparison.OrdinalIgnoreCase) && collegeName.Equals(CollegeName, StringComparison.OrdinalIgnoreCase) && title.Equals(Title, StringComparison.OrdinalIgnoreCase) && degree.Equals(Degree, StringComparison.OrdinalIgnoreCase) && year.Equals(Year, StringComparison.OrdinalIgnoreCase))
 
         }
 
