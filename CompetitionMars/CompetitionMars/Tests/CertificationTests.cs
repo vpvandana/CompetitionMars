@@ -1,8 +1,11 @@
-﻿using CompetitionMars.DataModel;
+﻿using AventStack.ExtentReports;
+using AventStack.ExtentReports.Reporter;
+using CompetitionMars.DataModel;
 using CompetitionMars.Pages;
 using CompetitionMars.Utilities;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
@@ -12,12 +15,25 @@ using System.Threading.Tasks;
 
 namespace CompetitionMars.Tests
 {
+    [TestFixture]
     public class CertificationTests : CommonDriver
     {
         private LoginPage loginPageObject = new LoginPage();
         private CertificationPage certificationPageObject = new CertificationPage();
         private JsonHelper jsonHelperObject = new JsonHelper();
         private List<Certification> testData = new List<Certification>();
+        private ExtentReports extent;
+        private ExtentTest test;
+
+        [OneTimeSetUp]
+        public void SetupReport()
+        {
+            string reportPath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\Utilities\\ExtentReport\\BaseReport.cs";
+            ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(reportPath);
+            extent = new ExtentReports();
+            extent.AttachReporter(htmlReporter);
+        }
+
 
         [SetUp]
         public void SetUpActions()
@@ -53,18 +69,26 @@ namespace CompetitionMars.Tests
                 string certificateYear = certificate.CertificationYear;
                 Console.WriteLine(certificateYear);
 
+                test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
+                string screenshotPath = CaptureScreenshot(driver, "AddCertification");
+                test.Log(Status.Info, "Screenshot", MediaEntityBuilder.CreateScreenCaptureFromPath(screenshotPath).Build());
+
                 certificationPageObject.AddCertification(certificateName, certificateFrom, certificateYear);
 
                 string addedCertificate = certificationPageObject.GetAddedCertification();
 
                 if (certificate.Certificate == addedCertificate)
                 {
-                    Assert.AreEqual(certificate.Certificate, addedCertificate, "Acual and expected education do not match");
+                    //Assert.AreEqual(certificate.Certificate, addedCertificate, "Acual and expected certification do not match");
+                    test.Log(Status.Pass, "Add certification test passed");
                 }
-                /* else
-                 {
-                     Console.WriteLine("Error in data");
-                 }*/
+                else
+                {
+                    test.Log(Status.Fail, "Test Failed");
+                }
+
+               
+               
             }
         }
         [Test]
@@ -234,12 +258,27 @@ namespace CompetitionMars.Tests
             Assert.AreEqual(expectedMessage, actualerrorMessage, "Expected and actual message do not match");
         }
 
+
+
         [TearDown]
             public void TearDownActions()
             {
                 driver.Quit();
+                extent.Flush();
             }
+        private string CaptureScreenshot(IWebDriver driver, string screenshotName)
+        {
+            ITakesScreenshot screenshotDriver = (ITakesScreenshot)driver;
+            Screenshot screenshot = screenshotDriver.GetScreenshot();
+            string screenshotPath = Path.Combine(@"C:\internship notes\CompetitionMars\CompetitionMars\CompetitionMars\CompetitionMars\CompetitionScreenshot\", $"{screenshotName}_{DateTime.Now:yyyyMMddHHmmss}.png");
+            screenshot.SaveAsFile(screenshotPath, ScreenshotImageFormat.Png);
+            return screenshotPath;
+        }
+        [OneTimeTearDown]
+        public void ExtentTeardown()
+        {
+            extent.Flush();
+        }
 
-        
     }
 }

@@ -39,8 +39,7 @@ namespace CompetitionMars.Pages
             certificateYearDropdown.SendKeys(CertificationYear);
             
             addButton.Click();
-            //  Thread.Sleep(2000);
-
+            
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 
         }
@@ -175,6 +174,7 @@ namespace CompetitionMars.Pages
         public void AddEmptyCertificationField(string Certificate, string From, string CertificationYear)
         {
             certificationTab.Click();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
 
             addNewButton.Click();
 

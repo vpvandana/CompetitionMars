@@ -1,4 +1,5 @@
-﻿using CompetitionMars.DataModel;
+﻿using AventStack.ExtentReports;
+using CompetitionMars.DataModel;
 using CompetitionMars.Pages;
 using CompetitionMars.Utilities;
 using Newtonsoft.Json;
@@ -14,12 +15,14 @@ using System.Threading.Tasks;
 
 namespace CompetitionMars.Tests
 {
+    [TestFixture]
     public class EducationTests : CommonDriver
     {
         private LoginPage loginPageObject = new LoginPage();
         private EducationPage educationPageObject = new EducationPage();
         private JsonHelper jsonHelperObject = new JsonHelper();
         private List<Education> testData = new List<Education>();
+       // ExtentReports report = ExtentManager.getInstance();
 
         [SetUp]
         public void SetUpActions()
