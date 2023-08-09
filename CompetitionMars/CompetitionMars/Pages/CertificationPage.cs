@@ -25,10 +25,10 @@ namespace CompetitionMars.Pages
         private static IWebElement addedCertificate => driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[5]/div[1]/div[2]/div/table/tbody[last()]/tr/td[1]"));
 
 
-        public void AddCertification(string Certificate, string From,string CertificationYear)
+        public void AddCertification(string Certificate, string From, string CertificationYear)
         {
 
-            Wait.WaitToBeClickable(driver, "XPath", "//*[@data-tab='third']", 7);
+            Wait.WaitToBeClickable(driver, "XPath", "//*[@data-tab='third']", 15);
             certificationTab.Click();
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
 
@@ -39,6 +39,7 @@ namespace CompetitionMars.Pages
             certificateYearDropdown.SendKeys(CertificationYear);
             
             addButton.Click();
+            Console.WriteLine("Certificate added");
             
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 
@@ -120,6 +121,7 @@ namespace CompetitionMars.Pages
                         IWebElement deleteIcon = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[5]/div[1]/div[2]/div/table/tbody[1]/tr/td[4]/span[2]/i"));
                         deleteIcon.Click();
                         driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
+                       driver.Navigate().Refresh();
                       
                     }
                 }

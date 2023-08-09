@@ -12,7 +12,7 @@ using System.Runtime.CompilerServices;
 
 namespace CompetitionMars.Utilities.ExtentReport
 {
-    public class BaseReport : CommonDriver
+    public class BaseReport
     {
        // protected ExtentHtmlReporter htmlReporter;
         protected ExtentReports extent;
@@ -27,18 +27,11 @@ namespace CompetitionMars.Utilities.ExtentReport
             
                 string reportPath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\Utilities\\ExtentReport\\BaseReport.cs";
                 // string reportFile = DateTime.Now.ToString().Replace("\\", "/");
-               ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(reportPath);
-
-                htmlReporter.Config.ReportName = "Automation Status Report";
-                htmlReporter.Config.DocumentTitle = "Automation Status Report";
-                htmlReporter.Config.Theme = Theme.Standard;
-                htmlReporter.Start();
-
+                ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(reportPath);
                 extent = new ExtentReports();
                 extent.AttachReporter(htmlReporter);
 
         }
-        [TearDown]
 
         [OneTimeTearDown]
 
