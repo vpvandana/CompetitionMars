@@ -1,4 +1,5 @@
 ﻿using AventStack.ExtentReports;
+using AventStack.ExtentReports.Reporter;
 using CompetitionMars.DataModel;
 using CompetitionMars.Pages;
 using CompetitionMars.Utilities;
@@ -26,7 +27,16 @@ namespace CompetitionMars.Tests
         private ExtentReports extent;
         private ExtentTest test;
 
-        
+        [OneTimeSetUp]
+        public void SetupReport()
+        {
+            string reportPath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\Utilities\\ExtentReport\\BaseReport.cs";
+            ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(reportPath);
+            extent = new ExtentReports();
+            extent.AttachReporter(htmlReporter);
+        }
+
+
 
         [SetUp]
         public void SetUpActions()
@@ -44,18 +54,18 @@ namespace CompetitionMars.Tests
 
         }
 
-        [Test]
+        [Test, Order(1)]
         public void TestAddEducationWithTestData()
         {
             EducationPage educationPageObject = new EducationPage();
-            
+
             string jsonFilePath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\TestData\\AddEducationTestData.json";
-            
+
             List<Education> testData = jsonHelperObject.ReadTestDataFromJson(jsonFilePath);
-            
+
             Console.WriteLine(testData.ToString());
 
-            foreach(var education in testData) 
+            foreach (var education in testData)
             {
                 string collegeName = education.CollegeName;
                 Console.WriteLine(collegeName);
@@ -72,63 +82,24 @@ namespace CompetitionMars.Tests
                 string year = education.Year;
                 Console.WriteLine(year);
 
-                educationPageObject.AddEducation(collegeName,country,title,degree,year);
+                test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
+                string screenshotPath = CaptureScreenshot(driver, "AddEducation");
+                test.Log(Status.Info, "Screenshot", MediaEntityBuilder.CreateScreenCaptureFromPath(screenshotPath).Build());
+
+                educationPageObject.AddEducation(collegeName, country, title, degree, year);
 
                 string addedTitle = educationPageObject.GetAddedEducation();
 
-                if(education.Title == addedTitle)
+                if (education.Title == addedTitle)
                 {
                     Assert.AreEqual(education.Title, addedTitle, "Acual and expected education do not match");
+                    test.Pass("Education added successfully");
                 }
-               /* else
-                {
-                    Console.WriteLine("Error in data");
-                }*/
             }
+        }
 
-           /* Assert.AreEqual(testData.Count, addedEducationDetails.Count,"No.of added education entries do not match");
-
-            for(int i = 0; i < testData.Count; i++)
-            {
-                Assert.AreEqual(testData[i].CollegeName, addedEducationDetails[i].CollegeName, "College name does not match" + (i + 1));
-                Assert.AreEqual(testData[i].Country, addedEducationDetails[i].Country,"Country does not match" +(i + 1));
-                Assert.AreEqual(testData[i].Title, addedEducationDetails[i].Title,"title does not not match"+(i + 1));
-                Assert.AreEqual(testData[i].Degree, addedEducationDetails[i].Degree,"Degree does not match"+(i + 1));
-                Assert.AreEqual(testData[i].Year, addedEducationDetails[i].Year,"year does not match"+(i + 1));
-            }*/
-          //  EducationPage educationPageObject = new EducationPage();
-           
-         
-           /* foreach(var education in testData) 
-            {
-                    
-            
-                educationPageObject.AddEducation(education);
-                string addedEducation = educationPageObject.GetEducation(education);
-                if(addedEducation == education.CollegeName) 
-                {
-                    Assert.AreEqual(education.CollegeName, addedEducation,"Actual college name and expected name are not equal");
-                }
-                else
-                {
-                    Console.WriteLine("Not added");
-                }
-               List<List<string>> tabledata = educationPageObject.GetEducationTableData();
-
-                bool foundEducation = false;
-                foreach(var row in tabledata)
-                {
-                    if(row.Contains(education.CollegeName) && row.Contains(education.Country) && row.Contains(education.Title) && row.Contains(education.Degree) && row.Contains(education.Year))
-                    { 
-                        foundEducation = true;
-                        break;
-                    }
-                }
-
-                Assert.IsTrue(foundEducation, "Added education details not found in table"); */
-
-            }
-        [Test]
+        
+        [Test,Order(2)]
         public void TestUpdateEducation()
         {
             EducationPage educationPageObject = new EducationPage();
@@ -156,38 +127,22 @@ namespace CompetitionMars.Tests
                 educationPageObject.UpdateEducation(collegeName, country, title, degree, year);
                 string updatedEducation = educationPageObject.GetUpdatedEducation();
 
-                if(updatedEducation == education.Degree)
+                test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
+                string screenshotPath = CaptureScreenshot(driver, "UpdateEducation");
+                test.Log(Status.Info, "Screenshot", MediaEntityBuilder.CreateScreenCaptureFromPath(screenshotPath).Build());
+
+
+                if (updatedEducation == education.Degree)
                 {
                     Assert.AreEqual(education.Degree, updatedEducation,"Actual and updated education do not match");
+                    test.Pass("Education updated successfully");
                 }
-
-               // Assert.AreEqual(testData, updatedEducation, "Actual and expected education do not match");
-              //  string expectedUpdatedMessage = educationPageObject.GetUpdatedEducation();
-
-                // Assert.AreEqual("Updated", expectedUpdatedMessage, "Expected and actual message not same");
-
-                // educationPageObject.UpdateEducation(CollegeName,Country, Title, Degree, Year);
-
-                // List<Education> updatedEducation = educationPageObject.GetUpdatedEducation();
-
-                //updatedEducation.Add(education);
-                // Assert.AreEqual(testData.Count, updatedEducation.Count, "Number of education entries mismatch.");
-
-                /*  for (int i = 0; i < testData.Count; i++)
-                  {
-                      Assert.AreEqual(testData[i].Country, updatedEducation[i].Country, "country mismatch for entry " + i);
-                      Assert.AreEqual(testData[i].CollegeName, updatedEducation[i].CollegeName, "college name mismatch for entry " + i);
-                      Assert.AreEqual(testData[i].Title, updatedEducation[i].Title, "title mismatch for entry " + i);
-                      Assert.AreEqual(testData[i].Degree, updatedEducation[i].Degree, "Degree mismatch for entry " + i);
-                      Assert.AreEqual(testData[i].Year, updatedEducation[i].Year, "Year mismatch for entry " + i);
-                  }*/
-
             }
             
 
         }
 
-        [Test]
+        [Test,Order(3)]
         public void DeleteEducationTest()
         {
             EducationPage educationPageObject = new EducationPage();
@@ -206,15 +161,21 @@ namespace CompetitionMars.Tests
                 educationPageObject.DeleteEducation(degree);
                 string expectedMessage = educationPageObject.GetDeleteEducation();
 
-               // string actualMessage = educationPageObject.GetDeleteMessage();
-               // string expectedDeleteMessage = "Education entry successfully removed";
-              //  Assert.AreEqual(actualMessage, expectedDeleteMessage, "Actual and expected message do not match");
+                test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
+                string screenshotPath = CaptureScreenshot(driver, "DeleteEducation");
+                test.Log(Status.Info, "Screenshot", MediaEntityBuilder.CreateScreenCaptureFromPath(screenshotPath).Build());
+
+
+                // string actualMessage = educationPageObject.GetDeleteMessage();
+                // string expectedDeleteMessage = "Education entry successfully removed";
+                //  Assert.AreEqual(actualMessage, expectedDeleteMessage, "Actual and expected message do not match");
                 Assert.AreEqual("Deleted", expectedMessage, "Message mismatch.Education not deleted");
+                test.Pass("Education deleted");
             }
             
         }
 
-        [Test]
+        [Test,Order(4)]
         public void AddEmptyEducationTest() 
         {
             EducationPage educationPageObject = new EducationPage();
@@ -245,10 +206,11 @@ namespace CompetitionMars.Tests
                 string expectedMessage = "Please enter all the fields";
 
                 Assert.AreEqual(expectedMessage, actualerrorMessage, "Expected and actual message do not match");
+                test.Pass("User not able to add empty fields");
             }
         }
 
-        [Test]
+        [Test,Order(5)]
         public void AddSameDegreeSameYearTest()
         {
             EducationPage educationPageObject = new EducationPage();
@@ -278,11 +240,12 @@ namespace CompetitionMars.Tests
                 string actualerrorMessage = educationPageObject.GetSameEducationDetailsErrorMessage();
                 string expectedMessage = "This information is already exist.";
 
-                Assert.AreEqual(expectedMessage, actualerrorMessage, "Expected and actual message do not match");
+              Assert.AreEqual(expectedMessage, actualerrorMessage, "Expected and actual message do not match");
+              
             }
         }
 
-        [Test]
+        [Test,Order(6)]
         public void AddSameDegreeDifferentYearTest()
         {
             EducationPage educationPageObject = new EducationPage();
@@ -313,9 +276,10 @@ namespace CompetitionMars.Tests
                 string expectedMessage = "Duplicated data";
 
                 Assert.AreEqual(expectedMessage, actualerrorMessage, "Expected and actual message do not match");
+                
             }
         }
-        [Test]
+        [Test,Order(7)]
         public void UpdateEducationNoChangeTest()
         {
             EducationPage educationPageObject = new EducationPage();
@@ -325,15 +289,33 @@ namespace CompetitionMars.Tests
             string expectedMessage = "This information is already exist.";
 
             Assert.AreEqual(expectedMessage, actualerrorMessage, "Expected and actual message do not match");
+            test.Pass("Test is passed");
 
         }
 
+        private string CaptureScreenshot(IWebDriver driver, string screenshotName)
+        {
+            ITakesScreenshot screenshotDriver = (ITakesScreenshot)driver;
+            Screenshot screenshot = screenshotDriver.GetScreenshot();
+            string screenshotPath = Path.Combine(@"C:\internship notes\CompetitionMars\CompetitionMars\CompetitionMars\CompetitionMars\CompetitionScreenshot\", $"{screenshotName}_{DateTime.Now:yyyyMMddHHmmss}.png");
+            screenshot.SaveAsFile(screenshotPath, ScreenshotImageFormat.Png);
+            return screenshotPath;
+        }
+
+
         [TearDown]
-    public void TearDownActions()
+        public void TearDownActions()
         {
             driver.Quit();
         }
+
+        [OneTimeTearDown]
+        public void ExtentTeardown()
+        {
+            extent.Flush();
+        }
+
     }
 
-    
+
 }

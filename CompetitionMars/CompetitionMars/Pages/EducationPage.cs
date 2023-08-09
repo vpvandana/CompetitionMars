@@ -62,17 +62,6 @@ namespace CompetitionMars.Pages
         {
             educationTab.Click();
 
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
-            IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Country']//ancestor::thead//following-sibling::tbody/tr"));
-            // string result = "";
-
-            //find the row in table
-
-            //IWebElement row = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[4]/div/div[2]/div/table/tbody[1]/tr"));
-
-            // if (row != null) 
-
-            // {
             updateIcon.Click();
             universityNameTextbox.Clear();
             universityNameTextbox.SendKeys(CollegeName);
@@ -85,16 +74,7 @@ namespace CompetitionMars.Pages
             yearOfGraduationDropdown.SendKeys(Year);
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
             updateButton.Click();
-            Thread.Sleep(3000);
-                //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15); 
-
-
-           // }
-
-           // else 
-           // {
-              //  Console.WriteLine("Not found");
-            //}
+            
         }
 
         public string GetUpdatedEducation()
@@ -120,7 +100,7 @@ namespace CompetitionMars.Pages
                 string degree = education.Degree;
                 //Console.WriteLine(degree);
 
-                IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Country']//ancestor::thead//following-sibling::tbody[1]/tr"));
+                IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Country']//ancestor::thead//following-sibling::tbody[last()]/tr"));
                 foreach (IWebElement row in rows)
                 {
                     IWebElement degreeElement = row.FindElement(By.XPath("./td[4]"));
@@ -130,7 +110,7 @@ namespace CompetitionMars.Pages
                     if(degreetodelete == education.Degree)
                     {
 
-                        IWebElement deleteIcon = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[4]/div/div[2]/div/table/tbody[1]/tr/td[6]/span[2]/i"));
+                        IWebElement deleteIcon = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[4]/div/div[2]/div/table/tbody[last()]/tr/td[6]/span[2]/i"));
                         deleteIcon.Click();
                        // Thread.Sleep(3000);
                         driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
@@ -139,7 +119,7 @@ namespace CompetitionMars.Pages
                 }
             }
 
-            driver.Navigate().Refresh();    
+          driver.Navigate().Refresh();    
         }
 
         public string GetDeleteEducation()
@@ -156,7 +136,7 @@ namespace CompetitionMars.Pages
                 string title = education.Title;
                
 
-                IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Country']//ancestor::thead//following-sibling::tbody[1]/tr"));
+                IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Country']//ancestor::thead//following-sibling::tbody[last()]/tr"));
                 foreach (IWebElement row in rows)
                 {
 
@@ -245,7 +225,7 @@ namespace CompetitionMars.Pages
 
         public string GetSameEducationDetailsErrorMessage()
         {
-            IWebElement actualErrorMessage = driver.FindElement(By.XPath("//div[@class='ns-box ns-growl ns-effect-jelly ns-type-error ns-show']"));
+            IWebElement actualErrorMessage = driver.FindElement(By.XPath("//div[@class='ns-box-inner']"));
             return actualErrorMessage.Text;
         }
 
