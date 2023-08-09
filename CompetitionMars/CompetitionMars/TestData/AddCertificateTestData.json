@@ -2,21 +2,21 @@
   {
     "Certificate": "ISTQB",
     "From": "ISQI",
-    "CertificationYear": "2020"
+    "CertificationYear": 2020
   },
   {
     "Certificate": "abc",
     "From": "Adobe",
-    "CertificationYear": "2021"
+    "CertificationYear": 2021
   },
   {
     "Certificate": "Tosca",
     "From": "isqi",
-    "CertificationYear": "2021"
+    "CertificationYear": 2021
   },
   {
     "Certificate": "TA",
     "From": "IC",
-    "CertificationYear": "2021"
+    "CertificationYear": 2021
   }
 ]

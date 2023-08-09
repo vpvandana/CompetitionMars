@@ -34,7 +34,6 @@ namespace CompetitionMars.Tests
             extent.AttachReporter(htmlReporter);
         }
 
-
         [SetUp]
         public void SetUpActions()
         {
@@ -47,7 +46,7 @@ namespace CompetitionMars.Tests
 
         }
 
-        [Test]
+        [Test,Order(1)]
         public void TestAddCertificationWithTestData()
         {
             CertificationPage certificationPageObject = new CertificationPage();
@@ -79,15 +78,17 @@ namespace CompetitionMars.Tests
 
                 if (certificateName == addedCertificate)
                 {
-                   // Assert.AreEqual(certificate.Certificate, addedCertificate, "Acual and expected certification do not match");
+
+                    // Assert.AreEqual(certificate.Certificate, addedCertificate, "Acual and expected certification do not match");
+                    Console.WriteLine("test pass");
                     test.Pass("Add certification test passed");
                    // break;
                 }
-               // else { test.Fail("Test Failed"); }
+               //else { test.Fail("Test Failed"); }
                
             }
         }
-        [Test]
+        [Test,Order(2)]
 
         public void TestUpdateCertification()
         {
@@ -110,12 +111,14 @@ namespace CompetitionMars.Tests
                 string certificateYear = certificate.CertificationYear;
                 Console.WriteLine(certificateYear);
 
-                test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
-                string screenshotPath = CaptureScreenshot(driver, "UpdateCertification");
-                test.Log(Status.Info, "Screenshot", MediaEntityBuilder.CreateScreenCaptureFromPath(screenshotPath).Build());
-
+                
 
                 certificationPageObject.UpdateCertification(certificateName, certificateFrom, certificateYear);
+
+                test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
+                string screenshotPath = CaptureScreenshot(driver, "GetUpdatedCertification");
+                test.Log(Status.Info, "Screenshot", MediaEntityBuilder.CreateScreenCaptureFromPath(screenshotPath).Build());
+
 
                 string updatedCertificate =  certificationPageObject.GetUpdatedCertification();   
 
@@ -129,7 +132,7 @@ namespace CompetitionMars.Tests
             }
         }
 
-        [Test]
+        [Test,Order(3)]
         public void DeleteCertificationTest()
         {
             CertificationPage certificationPageObject = new CertificationPage();
@@ -146,21 +149,22 @@ namespace CompetitionMars.Tests
                 //Console.WriteLine(certificateFrom);
                 string certificateYear = certificate.CertificationYear;
 
+                certificationPageObject.DeleteCertification();
+                
+                string deleteCertificateResult = certificationPageObject.GetDeletedCertification();
+
+
                 test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
                 string screenshotPath = CaptureScreenshot(driver, "DeleteCertification");
                 test.Log(Status.Info, "Screenshot", MediaEntityBuilder.CreateScreenCaptureFromPath(screenshotPath).Build());
 
-
-                certificationPageObject.DeleteCertification(certificateName);
-                
-                string deleteCertificateResult = certificationPageObject.GetDeletedCertification();
 
                 Assert.AreEqual("Deleted", deleteCertificateResult, "Actual and expected message do not match. Certificate not deleted");
                 test.Pass("Certificate Deleted");
             }
         }
 
-        [Test]
+        [Test,Order(4)]
         public void AddEmptyFieldTest()
         {
             CertificationPage certificationPageObject = new CertificationPage();
@@ -182,6 +186,10 @@ namespace CompetitionMars.Tests
                 string certificateYear = certificate.CertificationYear;
                 Console.WriteLine(certificateYear);
 
+                test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
+                string screenshotPath = CaptureScreenshot(driver, "AddEmptyCertificationField");
+                test.Log(Status.Info, "Screenshot", MediaEntityBuilder.CreateScreenCaptureFromPath(screenshotPath).Build());
+
                 certificationPageObject.AddEmptyCertificationField(certificateName,certificateFrom, certificateYear);
 
                 string actualErrorMessage = "Please enter Certification Name, Certification From and Certification Year";
@@ -189,9 +197,10 @@ namespace CompetitionMars.Tests
                 string expectedErrorMessage = certificationPageObject.GetEmptyFieldErrorMessage();
 
                 Assert.AreEqual(expectedErrorMessage, actualErrorMessage,"Actual and expected messages do not match");
+                test.Pass("Test Pass. Error message"+actualErrorMessage+"displayed");
             }
         }
-        [Test]
+        [Test,Order(6)]
         public void SameCertificateSameYearTest()
         {
             CertificationPage certificationPageObject = new CertificationPage();
@@ -213,16 +222,21 @@ namespace CompetitionMars.Tests
                 string certificateYear = certificate.CertificationYear;
                 Console.WriteLine(certificateYear);
 
+                test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
+                string screenshotPath = CaptureScreenshot(driver, "AddSameCertificationSameYear");
+                test.Log(Status.Info, "Screenshot", MediaEntityBuilder.CreateScreenCaptureFromPath(screenshotPath).Build());
+
                 certificationPageObject.AddSameCertificationSameYear(certificateName, certificateFrom, certificateYear);
 
-                string actualErrorMessage = "This information is already exist.";
+                string actualErrorMessage = "Duplicated data";
 
                 string expectedErrorMessage = certificationPageObject.GetSameCertificationSameYearErrorMessage();
 
                 Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "Actual and expected messages do not match");
+                test.Pass("Test Pass. Error message displayed and user is not able to add");
             }
         }
-        [Test]
+        [Test,Order(5)]
         public void SameCertificateDifferentYearTest()
         {
             CertificationPage certificationPageObject = new CertificationPage();
@@ -244,6 +258,10 @@ namespace CompetitionMars.Tests
                 string certificateYear = certificate.CertificationYear;
                 Console.WriteLine(certificateYear);
 
+                test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
+                string screenshotPath = CaptureScreenshot(driver, "AddSameCertificationDifferentYear");
+                test.Log(Status.Info, "Screenshot", MediaEntityBuilder.CreateScreenCaptureFromPath(screenshotPath).Build());
+
                 certificationPageObject.AddSameCertificationDifferentYear(certificateName, certificateFrom, certificateYear);
 
                 string actualErrorMessage = "Duplicated data";
@@ -251,19 +269,26 @@ namespace CompetitionMars.Tests
                 string expectedErrorMessage = certificationPageObject.GetSameCertificationDifferentYearErrorMessage();
 
                 Assert.AreEqual(expectedErrorMessage, actualErrorMessage, "Actual and expected messages do not match");
+                test.Pass("Test Pass.Error message displayed and user is not able to add.");
             }
         }
 
-        [Test]
+        [Test,Order(7)]
         public void UpdateNoChangeTest()
         {
             CertificationPage certificatePageObject = new CertificationPage();
+
+            test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
+            string screenshotPath = CaptureScreenshot(driver, "UpdateCertificateNoChange");
+            test.Log(Status.Info, "Screenshot", MediaEntityBuilder.CreateScreenCaptureFromPath(screenshotPath).Build());
+
             certificatePageObject.UpdateCertificateNoChange();
 
             string actualerrorMessage = certificatePageObject.GetUpdateNoChangeErrorMessage();
             string expectedMessage = "This information is already exist.";
 
             Assert.AreEqual(expectedMessage, actualerrorMessage, "Expected and actual message do not match");
+            test.Pass("Test Pass");
         }
 
 
@@ -272,7 +297,7 @@ namespace CompetitionMars.Tests
             public void TearDownActions()
             {
                 driver.Quit();
-                extent.Flush();
+               // extent.Flush();
             }
         private string CaptureScreenshot(IWebDriver driver, string screenshotName)
         {

@@ -2,6 +2,7 @@
 using CompetitionMars.DataModel;
 using CompetitionMars.Pages;
 using CompetitionMars.Utilities;
+using CompetitionMars.Utilities.ExtentReport;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OpenQA.Selenium;
@@ -22,7 +23,10 @@ namespace CompetitionMars.Tests
         private EducationPage educationPageObject = new EducationPage();
         private JsonHelper jsonHelperObject = new JsonHelper();
         private List<Education> testData = new List<Education>();
-       // ExtentReports report = ExtentManager.getInstance();
+        private ExtentReports extent;
+        private ExtentTest test;
+
+        
 
         [SetUp]
         public void SetUpActions()

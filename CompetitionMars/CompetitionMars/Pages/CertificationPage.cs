@@ -94,7 +94,7 @@ namespace CompetitionMars.Pages
 
         }
 
-        public void DeleteCertification(string Certificate)
+        public void DeleteCertification()
         {
            
             certificationTab.Click();
@@ -109,23 +109,27 @@ namespace CompetitionMars.Pages
             foreach (var certificate in certificationTestData)
             {
                 string certificateName = certificate.Certificate;
+
                 //  Console.WriteLine(certificateName);
-                IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Certificate']//ancestor::thead//following-sibling::tbody/tr"));
+                Wait.WaitToExist(driver, "XPath", "//th[text()='Certificate']//ancestor::thead//following-sibling::tbody[last()]/tr", 7);
+
+                IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Certificate']//ancestor::thead//following-sibling::tbody[last()]/tr"));
                 foreach (IWebElement row in rows) 
                 {
+                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(7);
                     IWebElement certificateNameElement = row.FindElement(By.XPath("./td[1]"));
                     string certificateToDelete = certificateNameElement.Text;
 
                     if(certificateToDelete == certificate.Certificate) 
                     {
-                        IWebElement deleteIcon = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[5]/div[1]/div[2]/div/table/tbody[1]/tr/td[4]/span[2]/i"));
+                        IWebElement deleteIcon = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[5]/div[1]/div[2]/div/table/tbody[last()]/tr/td[4]/span[2]/i"));
                         deleteIcon.Click();
                         driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
-                       driver.Navigate().Refresh();
+                      
                       
                     }
                 }
-
+               // driver.Navigate().Refresh();
             }          
 
         }

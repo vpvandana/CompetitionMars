@@ -25,17 +25,21 @@ namespace CompetitionMars.Utilities.ExtentReport
 
         {
             
-                string reportPath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\Utilities\\ExtentReport\\BaseReport.cs";
+            string reportPath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\Utilities\\ExtentReport\\BaseReport.cs";
                 // string reportFile = DateTime.Now.ToString().Replace("\\", "/");
-                ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(reportPath);
-                extent = new ExtentReports();
-                extent.AttachReporter(htmlReporter);
+            ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(reportPath);
+           
+            extent = new ExtentReports();
+            extent.AttachReporter(htmlReporter);
+                
 
         }
 
+        [TearDown]
+
         [OneTimeTearDown]
 
-        public void TearDownReport() 
+                public void TearDownReport() 
         {
             extent.Flush();
         }
