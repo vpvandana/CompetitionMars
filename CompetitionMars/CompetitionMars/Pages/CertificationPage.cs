@@ -24,171 +24,199 @@ namespace CompetitionMars.Pages
         private static IWebElement certificationTab => driver.FindElement(By.XPath("//a[@data-tab='fourth']"));
         private static IWebElement addedCertificate => driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[5]/div[1]/div[2]/div/table/tbody[last()]/tr/td[1]"));
 
-
-        public void AddCertification(string Certificate, string From, string CertificationYear)
+        public void SendKeysToInputField(Certification certificate)
         {
-
-            Wait.WaitToBeClickable(driver, "XPath", "//*[@data-tab='third']", 15);
-            certificationTab.Click();
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
-
-            addNewButton.Click();
-
-            certificateTextbox.SendKeys(Certificate);
-            certificateFromTextbox.SendKeys(From);
-            certificateYearDropdown.SendKeys(CertificationYear);
-            
-            addButton.Click();
-            Console.WriteLine("Certificate added");
-            
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-
-        }
-
-        public string GetAddedCertification()
-        {
-            return addedCertificate.Text;
-        }
-
-        public void UpdateCertification(string Certificate, string From, string CertificationYear)
-        {
-            certificationTab.Click();
-
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
-
-            //find the row in table
-
-            //IWebElement row = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[4]/div/div[2]/div/table/tbody[1]/tr"));
-
-            // if (row != null) 
-
-            // {
-            updateIcon.Click();
             certificateTextbox.Clear();
-            certificateTextbox.SendKeys(Certificate);
+            certificateTextbox.SendKeys(certificate.Certificate);
 
             certificateFromTextbox.Clear();
-            certificateFromTextbox.SendKeys(From);
+            certificateFromTextbox.SendKeys(certificate.From);
+            certificateYearDropdown.SendKeys(certificate.CertificationYear);
 
-            certificateYearDropdown.SendKeys(CertificationYear);
+        }
+        public void ClearExistingEntries() 
+        {
+            Wait.WaitToBeClickable(driver, "XPath", "//*[@data-tab='fourth']", 15);
+            certificationTab.Click();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
+            IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Certificate']//ancestor::thead//following-sibling::tbody/tr"));
+            if (rows.Count > 0)
+            {
+                foreach (IWebElement row in rows)
+                {
+                    IWebElement deleteIcon = row.FindElement(By.XPath("./td[4]/span[2]/i"));
+                    deleteIcon.Click();
+                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+                }
+            }
+        }
+        public void AddCertification(Certification certificate)
+        {
+
+            Wait.WaitToBeClickable(driver, "XPath", "//*[@data-tab='fourth']", 15);
+            certificationTab.Click();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
+          
+            addNewButton.Click();
+
+            SendKeysToInputField(certificate);
+            
+            addButton.Click();
+            
+            //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+          
+        }
+
+        public string GetAddedCertification(Certification certificate)
+        {
+            Thread.Sleep(1000);          
+            string result = "";
+            IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Certificate']//ancestor::thead//following-sibling::tbody[last()]/tr"));
+            
+            foreach (IWebElement row in rows) 
+            {
+                IWebElement certificateNameElement = row.FindElement(By.XPath("./td[1]"));
+                IWebElement certificateFromElement = row.FindElement(By.XPath("./td[2]"));
+                string addedCertificateName = certificateNameElement.Text;
+                string addedCertificateFrom = certificateFromElement.Text;
+
+                if(addedCertificateName.Equals(certificate.Certificate) && addedCertificateFrom.Equals(certificate.From))
+                {
+                    result = addedCertificateName;
+                    break;
+                }
+                else
+                {
+                    result = "Not Added";
+                }
+
+            }
+         return result;
+        }
+        public string GetAddedMessage()
+        {
+            IWebElement actualMessage = driver.FindElement(By.XPath("//div[@class='ns-box-inner']"));
+            return actualMessage.Text;
+        }
+       
+        public void UpdateCertification(Certification certificate)
+        {
+            certificationTab.Click();
+
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
+
+            updateIcon.Click();
+
+            SendKeysToInputField(certificate);
+
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
             updateButton.Click();
-            //Thread.Sleep(3000);
+           
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5); 
 
             driver.Navigate().Refresh();
 
-
-            // }
-
-            // else 
-            // {
-            //  Console.WriteLine("Not found");
-            //}
         }
 
-        public string GetUpdatedCertification()
+        public string GetUpdatedCertification(Certification certificate)
         {
-            IWebElement updatedCertificate = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[5]/div[1]/div[2]/div/table/tbody/tr/td[1]"));
-            return updatedCertificate.Text;
+            // IWebElement updatedCertificate = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[5]/div[1]/div[2]/div/table/tbody/tr/td[1]"));
+            //return updatedCertificate.Text;
+
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
+
+            string result = "";
+            IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Certificate']//ancestor::thead//following-sibling::tbody/tr"));
+
+            foreach (IWebElement row in rows)
+            {
+                IWebElement certificateNameElement = row.FindElement(By.XPath("./td[1]"));
+                IWebElement certificateFromElement = row.FindElement(By.XPath("./td[2]"));
+
+                string updatedCertificateName = certificateNameElement.Text;
+                string updatedCertificateFrom = certificateFromElement.Text;
+
+                if ((updatedCertificateName == certificate.Certificate) && (updatedCertificateFrom == certificate.From))
+                {
+                    result = updatedCertificateName;
+                    break;
+                }
+
+            }
+
+            return result;
 
         }
 
-        public void DeleteCertification()
+    
+        public void DeleteCertification(Certification certificate)
         {
            
             certificationTab.Click();
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
-            JsonHelper jsonHelperObject = new JsonHelper();
-            string jsonFilePath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\TestData\\DeleteCertificateTestData.json";
-            
-            List<Certification> certificationTestData = jsonHelperObject.ReadCertificateTestDataFromJson(jsonFilePath);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
+           
+            Wait.WaitToExist(driver, "XPath", "//th[text()='Certificate']//ancestor::thead//following-sibling::tbody[last()]/tr", 7);
 
-            Console.WriteLine(certificationTestData.ToString());
-
-            foreach (var certificate in certificationTestData)
+            IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Certificate']//ancestor::thead//following-sibling::tbody/tr"));
+            foreach (IWebElement row in rows) 
             {
-                string certificateName = certificate.Certificate;
-
-                //  Console.WriteLine(certificateName);
-                Wait.WaitToExist(driver, "XPath", "//th[text()='Certificate']//ancestor::thead//following-sibling::tbody[last()]/tr", 7);
-
-                IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Certificate']//ancestor::thead//following-sibling::tbody[last()]/tr"));
-                foreach (IWebElement row in rows) 
-                {
-                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(7);
-                    IWebElement certificateNameElement = row.FindElement(By.XPath("./td[1]"));
-                    string certificateToDelete = certificateNameElement.Text;
+                 driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(7);
+                 IWebElement certificateNameElement = row.FindElement(By.XPath("./td[1]"));
+                 string certificateToDelete = certificateNameElement.Text;
 
                     if(certificateToDelete == certificate.Certificate) 
                     {
                         IWebElement deleteIcon = driver.FindElement(By.XPath("//*[@id=\"account-profile-section\"]/div/section[2]/div/div/div/div[3]/form/div[5]/div[1]/div[2]/div/table/tbody[last()]/tr/td[4]/span[2]/i"));
                         deleteIcon.Click();
-                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
+                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
                       
                       
                     }
-                }
-               // driver.Navigate().Refresh();
             }          
 
         }
 
-        public string GetDeletedCertification()
+        public string GetDeletedCertification(Certification certificate)
         {
-            JsonHelper jsonHelperObject = new JsonHelper();
-            string jsonFilePath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\TestData\\DeleteCertificateTestData.json";
-            
-            List<Certification> certificationTestData = jsonHelperObject.ReadCertificateTestDataFromJson(jsonFilePath);
-            // List<Certification> certificationTestData = JsonConvert.DeserializeObject<List<Certification>>(jsonData);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
+
             string result = "";
+            IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Certificate']//ancestor::thead//following-sibling::tbody[last()]/tr"));
 
-            foreach(var certificate in certificationTestData)
+            foreach (IWebElement row in rows)
             {
-                string certificateName = certificate.Certificate;
-                string certificateFrom = certificate.From;
+                IWebElement certificateNameElement = row.FindElement(By.XPath("./td[1]"));
+                IWebElement certificateFromElement = row.FindElement(By.XPath("./td[2]"));
 
-                IReadOnlyCollection<IWebElement> rows = driver.FindElements(By.XPath("//th[text()='Certificate']//ancestor::thead//following-sibling::tbody/tr"));
+                string deletedCertificateName = certificateNameElement.Text;
+                string deletedCertificateFrom = certificateFromElement.Text;
 
-                foreach (IWebElement row in rows)
+                if ((deletedCertificateName != certificate.Certificate) && (deletedCertificateFrom != certificate.From))
                 {
-                    IWebElement certificateNameElement = row.FindElement(By.XPath("./td[1]"));
-                    IWebElement certificateFromElement = row.FindElement(By.XPath("./td[2]"));
-
-                    string deletedCertificateName = certificateNameElement.Text;
-                    string deletedCertificateFrom = certificateFromElement.Text;
-
-                    if ((deletedCertificateName != certificate.Certificate) && (deletedCertificateFrom != certificate.From))
-                      {
-                        result = "Deleted";
-                        break;
-                      }
-                    else
-                    {
-                        result = "Not Deleted";
-                    }
-                    
-
+                    result = "Deleted";
+                    break;
                 }
+              
             }
-           
+                
             return result;
-            //  if (country.Equals(Country, StringComparison.OrdinalIgnoreCase) && collegeName.Equals(CollegeName, StringComparison.OrdinalIgnoreCase) && title.Equals(Title, StringComparison.OrdinalIgnoreCase) && degree.Equals(Degree, StringComparison.OrdinalIgnoreCase) && year.Equals(Year, StringComparison.OrdinalIgnoreCase))
-
         }
 
-        public void AddEmptyCertificationField(string Certificate, string From, string CertificationYear)
+        public string GetDeletedMessage()
+        {
+            IWebElement deleteMessage = driver.FindElement(By.XPath("//div[@class='ns-box-inner']"));
+            return deleteMessage.Text;
+        }
+
+        public void AddEmptyCertificationField(Certification certificate)
         {
             certificationTab.Click();
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
 
             addNewButton.Click();
-
-            certificateTextbox.SendKeys(Certificate);
-            certificateFromTextbox.SendKeys(From);
-            certificateYearDropdown.SendKeys(CertificationYear);
-
+            SendKeysToInputField(certificate);
             addButton.Click();
+
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
         }
 
@@ -198,17 +226,13 @@ namespace CompetitionMars.Pages
             return actualErrorMessage.Text;
         }
 
-        public void AddSameCertificationSameYear(string Certificate,string From, string CertificationYear)
+        public void AddSameCertificationSameYear(Certification certificate)
         {
             certificationTab.Click();
+            
             addNewButton.Click();
-
-            certificateTextbox.SendKeys(Certificate);
-            certificateFromTextbox.SendKeys(From);
-
+            SendKeysToInputField(certificate);
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
-            certificateYearDropdown.SendKeys(CertificationYear);
-
             addButton.Click();
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
         }
@@ -218,16 +242,12 @@ namespace CompetitionMars.Pages
             IWebElement actualErrorMessage = driver.FindElement(By.XPath("//div[@class='ns-box-inner']"));
             return actualErrorMessage.Text;
         }
-        public void AddSameCertificationDifferentYear(string Certificate,string From,string CertificationYear)
+        public void AddSameCertificationDifferentYear(Certification certificate)
         {
             certificationTab.Click();
             addNewButton.Click();
-
-            certificateTextbox.SendKeys(Certificate);   
-            certificateFromTextbox.SendKeys(From);
-
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);
-            certificateYearDropdown.SendKeys(CertificationYear);
+            SendKeysToInputField(certificate);
 
             addButton.Click();
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(9);

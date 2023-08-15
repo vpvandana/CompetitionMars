@@ -1,17 +1,11 @@
 [
+
   {
-    "CollegeName": "UAT",
-    "Country": "New Zealand",
-    "Title": "Associate",
-    "Degree": "MS",
-    "Year": 2018
-  },
-  {
-    "CollegeName": "UC",
-    "Country": "New Zealand",
-    "Title": "PHD",
-    "Degree": "Imaging",
-    "Year": 2020
+    "CollegeName": "ASIET",
+    "Country": "India",
+    "Title": "M.B.A",
+    "Degree": "Finance",
+    "Year": 2015
   }
 ]
 

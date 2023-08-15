@@ -3,7 +3,6 @@ using AventStack.ExtentReports.Reporter;
 using CompetitionMars.DataModel;
 using CompetitionMars.Pages;
 using CompetitionMars.Utilities;
-using CompetitionMars.Utilities.ExtentReport;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OpenQA.Selenium;
@@ -24,36 +23,7 @@ namespace CompetitionMars.Tests
         private EducationPage educationPageObject = new EducationPage();
         private JsonHelper jsonHelperObject = new JsonHelper();
         private List<Education> testData = new List<Education>();
-        private ExtentReports extent;
-        private ExtentTest test;
-
-        [OneTimeSetUp]
-        public void SetupReport()
-        {
-            string reportPath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\Utilities\\ExtentReport\\BaseReport.cs";
-            ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(reportPath);
-            extent = new ExtentReports();
-            extent.AttachReporter(htmlReporter);
-        }
-
-
-
-        [SetUp]
-        public void SetUpActions()
-        {
-            driver = new ChromeDriver();
-            loginPageObject = new LoginPage();
-            educationPageObject = new EducationPage();
-            jsonHelperObject = new JsonHelper();
-
-            loginPageObject.LoginSteps();
-            
-          //  string jsonFilePath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\TestData\\addEducationTestData.json";
-           // testData = jsonHelperObject.ReadTestDataAddEducationFromJson(jsonFilePath);
-
-
-        }
-
+       
         [Test, Order(1)]
         public void TestAddEducationWithTestData()
         {
@@ -61,34 +31,22 @@ namespace CompetitionMars.Tests
 
             string jsonFilePath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\TestData\\AddEducationTestData.json";
 
-            List<Education> testData = jsonHelperObject.ReadTestDataFromJson(jsonFilePath);
+            List<Education> educationtestData = jsonHelperObject.ReadTestDataFromJson(jsonFilePath);
 
-            Console.WriteLine(testData.ToString());
-
-            foreach (var education in testData)
+            foreach (var education in educationtestData)
             {
-                string collegeName = education.CollegeName;
-                Console.WriteLine(collegeName);
-
-                string country = education.Country;
-                Console.WriteLine(country);
-
-                string degree = education.Degree;
-                Console.WriteLine(degree);
-
-                string title = education.Title;
-                Console.WriteLine(title);
-
-                string year = education.Year;
-                Console.WriteLine(year);
-
-                test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
                 string screenshotPath = CaptureScreenshot(driver, "AddEducation");
                 test.Log(Status.Info, "Screenshot", MediaEntityBuilder.CreateScreenCaptureFromPath(screenshotPath).Build());
 
-                educationPageObject.AddEducation(collegeName, country, title, degree, year);
+                educationPageObject.ClearExistingEntries();
+                educationPageObject.AddEducation(education);
 
-                string addedTitle = educationPageObject.GetAddedEducation();
+                string addedTitle = educationPageObject.GetAddedEducation(education);
+
+                string expectedSuccessMessage =  "Education has been added";
+                string actualMessage = educationPageObject.GetAddedMessage();
+                Assert.AreEqual(expectedSuccessMessage, actualMessage, "Actual and expected message do not match");
+
 
                 if (education.Title == addedTitle)
                 {
@@ -109,25 +67,11 @@ namespace CompetitionMars.Tests
             Console.WriteLine(testData.ToString());
             foreach (var education in testData)
             {
-                string collegeName = education.CollegeName;
-                Console.WriteLine(collegeName);
+                
+                educationPageObject.UpdateEducation(education);
+                string updatedEducation = educationPageObject.GetUpdatedEducation(education);
 
-                string country = education.Country;
-                Console.WriteLine(country);
-
-                string degree = education.Degree;
-                Console.WriteLine(degree);
-
-                string title = education.Title;
-                Console.WriteLine(title);
-
-                string year = education.Year;
-                Console.WriteLine(year);
-
-                educationPageObject.UpdateEducation(collegeName, country, title, degree, year);
-                string updatedEducation = educationPageObject.GetUpdatedEducation();
-
-                test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
+                
                 string screenshotPath = CaptureScreenshot(driver, "UpdateEducation");
                 test.Log(Status.Info, "Screenshot", MediaEntityBuilder.CreateScreenCaptureFromPath(screenshotPath).Build());
 
@@ -148,29 +92,28 @@ namespace CompetitionMars.Tests
             EducationPage educationPageObject = new EducationPage();
             string jsonFilePath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\TestData\\DeleteEducationTestData.json";
             List<Education> testData = jsonHelperObject.ReadTestDataFromJson(jsonFilePath);
+            foreach(var education in testData)
+            {
+                educationPageObject.AddEducation(education);
+            }
 
-            Console.WriteLine(testData.ToString());
             foreach (var education in testData)
             {
-                string collegeName = education.CollegeName;
-                string country = education.Country;
-                string degree = education.Degree;
-                string title = education.Title;
-                string year = education.Year;
-               
-                educationPageObject.DeleteEducation(degree);
-                string expectedMessage = educationPageObject.GetDeleteEducation();
+                
+                educationPageObject.DeleteEducation(education);
 
-                test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
                 string screenshotPath = CaptureScreenshot(driver, "DeleteEducation");
                 test.Log(Status.Info, "Screenshot", MediaEntityBuilder.CreateScreenCaptureFromPath(screenshotPath).Build());
 
+                string expectedSuccessMessage = "Education entry successfully removed";
+                string actualMessage = educationPageObject.GetDeletedMessage();
+                Assert.AreEqual(expectedSuccessMessage, actualMessage, "Actual and expected message do not match");
 
-                // string actualMessage = educationPageObject.GetDeleteMessage();
-                // string expectedDeleteMessage = "Education entry successfully removed";
-                //  Assert.AreEqual(actualMessage, expectedDeleteMessage, "Actual and expected message do not match");
+                string expectedMessage = educationPageObject.GetDeleteEducation(education);
+
                 Assert.AreEqual("Deleted", expectedMessage, "Message mismatch.Education not deleted");
                 test.Pass("Education deleted");
+
             }
             
         }
@@ -182,25 +125,11 @@ namespace CompetitionMars.Tests
             string jsonFilePath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\TestData\\AddEmptyEducationTestData.json";
             List<Education> testData = jsonHelperObject.ReadTestDataFromJson(jsonFilePath);
 
-            Console.WriteLine(testData.ToString());
+           
             foreach (var education in testData)
             {
-                string collegeName = education.CollegeName;
-                Console.WriteLine(collegeName);
-
-                string country = education.Country;
-                Console.WriteLine(country);
-
-                string degree = education.Degree;
-                Console.WriteLine(degree);
-
-                string title = education.Title;
-                Console.WriteLine(title);
-
-                string year = education.Year;
-                Console.WriteLine(year);
-
-                educationPageObject.AddEmptyEducationField(collegeName, country, title, degree, year);
+              
+                educationPageObject.AddEmptyEducationField(education);
 
                 string actualerrorMessage = educationPageObject.GetEmptyFieldErrorMessage();
                 string expectedMessage = "Please enter all the fields";
@@ -217,25 +146,10 @@ namespace CompetitionMars.Tests
             string jsonFilePath = "C:\\internship notes\\CompetitionMars\\CompetitionMars\\CompetitionMars\\CompetitionMars\\TestData\\SameDegreeSameYear.json";
             List<Education> testData = jsonHelperObject.ReadTestDataFromJson(jsonFilePath);
 
-            Console.WriteLine(testData.ToString());
             foreach (var education in testData)
             {
-                string collegeName = education.CollegeName;
-                Console.WriteLine(collegeName);
-
-                string country = education.Country;
-                Console.WriteLine(country);
-
-                string degree = education.Degree;
-                Console.WriteLine(degree);
-
-                string title = education.Title;
-                Console.WriteLine(title);
-
-                string year = education.Year;
-                Console.WriteLine(year);
-
-                educationPageObject.AddSameDegreeSameYear(collegeName, country, title, degree, year);
+                
+                educationPageObject.AddSameDegreeSameYear(education);
 
                 string actualerrorMessage = educationPageObject.GetSameEducationDetailsErrorMessage();
                 string expectedMessage = "This information is already exist.";
@@ -254,23 +168,8 @@ namespace CompetitionMars.Tests
 
             Console.WriteLine(testData.ToString());
             foreach (var education in testData)
-            {
-                string collegeName = education.CollegeName;
-                Console.WriteLine(collegeName);
-
-                string country = education.Country;
-                Console.WriteLine(country);
-
-                string degree = education.Degree;
-                Console.WriteLine(degree);
-
-                string title = education.Title;
-                Console.WriteLine(title);
-
-                string year = education.Year;
-                Console.WriteLine(year);
-
-                educationPageObject.AddEducation(collegeName, country, title, degree, year);
+            { 
+                educationPageObject.AddEducation(education);
 
                 string actualerrorMessage = educationPageObject.GetSameDegreeDifferentYearErrorMessage();
                 string expectedMessage = "Duplicated data";
@@ -300,19 +199,6 @@ namespace CompetitionMars.Tests
             string screenshotPath = Path.Combine(@"C:\internship notes\CompetitionMars\CompetitionMars\CompetitionMars\CompetitionMars\CompetitionScreenshot\", $"{screenshotName}_{DateTime.Now:yyyyMMddHHmmss}.png");
             screenshot.SaveAsFile(screenshotPath, ScreenshotImageFormat.Png);
             return screenshotPath;
-        }
-
-
-        [TearDown]
-        public void TearDownActions()
-        {
-            driver.Quit();
-        }
-
-        [OneTimeTearDown]
-        public void ExtentTeardown()
-        {
-            extent.Flush();
         }
 
     }

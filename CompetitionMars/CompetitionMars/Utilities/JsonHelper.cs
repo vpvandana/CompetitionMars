@@ -14,13 +14,7 @@ namespace CompetitionMars.Utilities
 {
     public class JsonHelper
     {
-      /* public List<LoginTestModel> ReadTestDataFromJson(string jsonFilePath)
-        {
-            string jsonContent = File.ReadAllText(jsonFilePath);
-            List<LoginTestModel> testData = JsonConvert.DeserializeObject<List<LoginTestModel>>(jsonContent);
-            return testData;
-        }*/
-
+      
         public List<Education> ReadTestDataFromJson(string jsonFilePath)
         {
             string jsonContent = File.ReadAllText(jsonFilePath);
