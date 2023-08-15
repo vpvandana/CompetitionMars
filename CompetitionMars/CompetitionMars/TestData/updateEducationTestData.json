@@ -1,0 +1,17 @@
+[
+  {
+    "CollegeName": "abc",
+    "Country": "Netherlands",
+    "Title": "Associate",
+    "Degree": "MS",
+    "Year": 2019
+  },
+  {
+    "CollegeName": "bcd",
+    "Country": "Australia",
+    "Title": "M.Tech",
+    "Degree": "CS",
+    "Year": 2018
+  }
+]
+
